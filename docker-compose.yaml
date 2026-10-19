@@ -1,0 +1,28 @@
+services:
+  vault-cloud:
+    image: hashicorp/vault:latest
+    container_name: Cloud
+    command: server -dev
+    ports:
+      - "127.0.0.1:8200:8200"
+    environment:
+      VAULT_ADDR: http://0.0.0.0:8200
+      VAULT_DEV_ROOT_TOKEN_ID: cloud
+      VAULT_TOKEN: cloud
+    cap_add:
+      - IPC_LOCK
+    restart: "no"
+
+  vault-antenna:
+    image: hashicorp/vault:latest
+    container_name: Antenna
+    command: server -dev
+    ports:
+      - "127.0.0.1:8210:8200"
+    environment:
+      VAULT_ADDR: http://0.0.0.0:8200
+      VAULT_DEV_ROOT_TOKEN_ID: antenna
+      VAULT_TOKEN: antenna
+    cap_add:
+      - IPC_LOCK
+    restart: "no"
