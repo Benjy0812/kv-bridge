@@ -1,3 +1,4 @@
+use std::env;
 use serde::{Deserialize, Serialize};
 use vaultrs::client::{VaultClient, VaultClientSettingsBuilder};
 use vaultrs::kv2;
@@ -18,11 +19,16 @@ fn make_client(addr: &str, token: &str) -> VaultClient {
 }
 
 #[tokio::main]
-async fn main() -> Result<(), Box<dyn std::error::Error>>{
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    dotenvy::dotenv().ok();
 
-    // create vault objects
-    let cloud = make_client("http://127.0.0.1:8200", "cloud");
-    let antenna = make_client("http://127.0.0.1:8210", "antenna");
+    // Create vault clients
+    let cloud_address = env::var("CLOUD_VAULT_ADDR")?;
+    let cloud_token = env::var("CLOUD_VAULT_TOKEN")?;
+    let antenna_address = env::var("ANTENNA_VAULT_ADDR")?;
+    let antenna_token = env::var("ANTENNA_VAULT_TOKEN")?;
+    let cloud = make_client(&cloud_address, &cloud_token);
+    let antenna = make_client(&antenna_address, &antenna_token);
 
     // set CLOUD to secret/test: "from cloud"
     kv2::set(&cloud, "secret", "test", &MySecret { secret: "from cloud".into() }).await?;
