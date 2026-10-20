@@ -1,0 +1,31 @@
+sequenceDiagram
+participant C as Central Vault
+participant A as AWX
+participant Cam as KV-bridge
+participant T as Antenna-VM
+participant Ant as Antenna Vault
+
+Note over C,Ant: Bootstrap
+C->>A: bootstrap token
+A->>Ant: relay bootstrap token
+A->>Cam: relay bootstrap token
+A->>T: relay bootstrap token
+
+Note over Cam,Ant: Step 1: get secret and antenna address
+Cam->>C: get new secret + antenna address
+C-->>Cam: secret + antenna address
+
+Note over Cam,Ant: Step 2: push
+Cam->>Ant: push new secret
+
+Note over Cam,Ant: Step 3: get local tokens
+Cam->>Ant: get token
+Ant-->>Cam: token
+T->>Ant: get token
+Ant-->>T: token
+
+Note over Cam,Ant: Step 4: read secrets
+Cam->>Ant: read secret
+Ant-->>Cam: secret
+T->>Ant: read secret
+Ant-->>T: secret
