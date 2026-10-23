@@ -11,14 +11,17 @@ sequenceDiagram
     AWX->>ANTENNA_VAULT: relay bootstrap token
     AWX->>ANTENNA_DOCKER: relay bootstrap token
 
-    BRIDGE->>CLOUD: get new token + antenna address
-    CLOUD-->>BRIDGE: token + antenna address
+    BRIDGE->>CLOUD: get new token + antenna vault data
+    CLOUD-->>BRIDGE: token + antenna vault data
 
-    BRIDGE->>ANTENNA_VAULT: push new secret
+    BRIDGE->>ANTENNA_VAULT: push new vault data
     BRIDGE->>ANTENNA_VAULT: get token
+    BRIDGE->>ANTENNA_VAULT: get secrets
     ANTENNA_VAULT-->>BRIDGE: token
 
+
     ANTENNA_DOCKER->>ANTENNA_VAULT: get token
+    ANTENNA_DOCKER->>ANTENNA_VAULT: get secrets
     ANTENNA_VAULT-->>ANTENNA_DOCKER: token
 
     BRIDGE->>ANTENNA_VAULT: read secret
@@ -28,6 +31,6 @@ sequenceDiagram
     ANTENNA_VAULT-->>ANTENNA_DOCKER: secret
 
     Note over CLOUD,ANTENNA_DOCKER: Passed
-    BRIDGE ->> CLOUD: Get secrets
-    BRIDGE ->> ANTENNA_VAULT: Push Secrets
+    BRIDGE ->> CLOUD: Get vault data
+    BRIDGE ->> ANTENNA_VAULT: Push vault data
     BRIDGE ->> ANTENNA_VAULT: Get Secrets
