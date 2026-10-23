@@ -1,31 +1,33 @@
 sequenceDiagram
-participant C as Central Vault
-participant A as AWX
-participant Cam as KV-bridge
-participant T as Antenna-VM
-participant Ant as Antenna Vault
+    participant CLOUD as Central Vault
+    participant AWX as AWX
+    participant BRIDGE as KV-bridge
+    participant ANTENNA_VAULT as Antenna-Vault
+    participant ANTENNA_DOCKER as Antenna-docker
 
-Note over C,Ant: Bootstrap
-C->>A: bootstrap token
-A->>Ant: relay bootstrap token
-A->>Cam: relay bootstrap token
-A->>T: relay bootstrap token
+    Note over CLOUD,ANTENNA_DOCKER: Bootstrap
+    CLOUD->>AWX: bootstrap token
+    AWX->>BRIDGE: relay bootstrap token
+    AWX->>ANTENNA_VAULT: relay bootstrap token
+    AWX->>ANTENNA_DOCKER: relay bootstrap token
 
-Note over Cam,Ant: Step 1: get secret and antenna address
-Cam->>C: get new secret + antenna address
-C-->>Cam: secret + antenna address
+    BRIDGE->>CLOUD: get new token + antenna address
+    CLOUD-->>BRIDGE: token + antenna address
 
-Note over Cam,Ant: Step 2: push
-Cam->>Ant: push new secret
+    BRIDGE->>ANTENNA_VAULT: push new secret
+    BRIDGE->>ANTENNA_VAULT: get token
+    ANTENNA_VAULT-->>BRIDGE: token
 
-Note over Cam,Ant: Step 3: get local tokens
-Cam->>Ant: get token
-Ant-->>Cam: token
-T->>Ant: get token
-Ant-->>T: token
+    ANTENNA_DOCKER->>ANTENNA_VAULT: get token
+    ANTENNA_VAULT-->>ANTENNA_DOCKER: token
 
-Note over Cam,Ant: Step 4: read secrets
-Cam->>Ant: read secret
-Ant-->>Cam: secret
-T->>Ant: read secret
-Ant-->>T: secret
+    BRIDGE->>ANTENNA_VAULT: read secret
+    ANTENNA_VAULT-->>BRIDGE: secret
+
+    ANTENNA_DOCKER->>ANTENNA_VAULT: read secret
+    ANTENNA_VAULT-->>ANTENNA_DOCKER: secret
+
+    Note over CLOUD,ANTENNA_DOCKER: Passed
+    BRIDGE ->> CLOUD: Get secrets
+    BRIDGE ->> ANTENNA_VAULT: Push Secrets
+    BRIDGE ->> ANTENNA_VAULT: Get Secrets
