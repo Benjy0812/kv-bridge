@@ -95,7 +95,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     sleep(Duration::from_secs(sleep_time)).await;
 
     println!("\nGet data from cloud");
-    let read: GetData = kv2::read(&cloud, "secret", "data").awaait?;
+    let read: GetData = kv2::read(&cloud, "secret", "data").await?;
     println!(
         "name: {},\nage: {}, \nbirthday: {}",
         read.name, read.age, read.birthday
