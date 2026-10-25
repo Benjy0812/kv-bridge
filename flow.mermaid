@@ -1,3 +1,4 @@
+%%{init: {'theme': 'light', 'themeVariables': { 'primaryColor': '#007acc', 'primaryTextColor': '#fff', 'primaryBorderColor': '#007acc', 'lineColor': '#007acc', 'secondaryColor': '#f0f0f0', 'tertiaryColor': '#fff'}}}%%
 sequenceDiagram
     participant CLOUD as Central Vault
     participant AWX as AWX
@@ -16,13 +17,15 @@ sequenceDiagram
 
     BRIDGE->>ANTENNA_VAULT: push new vault data
     BRIDGE->>ANTENNA_VAULT: get token
-    BRIDGE->>ANTENNA_VAULT: get secrets
     ANTENNA_VAULT-->>BRIDGE: token
+    BRIDGE->>ANTENNA_VAULT: get secrets
+    ANTENNA_VAULT-->>BRIDGE: secrets
 
 
     ANTENNA_DOCKER->>ANTENNA_VAULT: get token
-    ANTENNA_DOCKER->>ANTENNA_VAULT: get secrets
     ANTENNA_VAULT-->>ANTENNA_DOCKER: token
+    ANTENNA_DOCKER->>ANTENNA_VAULT: get secrets
+    ANTENNA_VAULT-->>ANTENNA_DOCKER: secrets
 
     BRIDGE->>ANTENNA_VAULT: read secret
     ANTENNA_VAULT-->>BRIDGE: secret
@@ -32,5 +35,14 @@ sequenceDiagram
 
     Note over CLOUD,ANTENNA_DOCKER: Passed
     BRIDGE ->> CLOUD: Get vault data
+    CLOUD-->>BRIDGE: vault data
     BRIDGE ->> ANTENNA_VAULT: Push vault data
     BRIDGE ->> ANTENNA_VAULT: Get Secrets
+    ANTENNA_VAULT-->>BRIDGE: secrets
+
+    Note over CLOUD,ANTENNA_DOCKER: Prod sync
+    BRIDGE ->> CLOUD: Get vault data (repeated)
+    CLOUD-->>BRIDGE: vault data
+    BRIDGE ->> ANTENNA_VAULT: Push vault data (repeated)
+    BRIDGE ->> ANTENNA_VAULT: Get Secrets (repeated)
+    ANTENNA_VAULT-->>BRIDGE: secrets
