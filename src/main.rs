@@ -31,7 +31,7 @@ fn vault_client(addr: &str, token: &str) -> Result<VaultClient, Box<dyn std::err
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     dotenvy::dotenv().ok();
-    let sleep_time: u64 = 3;
+    let sleep_time: u64 = 0;
 
     // Connect to Central Vault
     let cloud = vault_client(
@@ -209,12 +209,12 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     )
     .await
     {
-        Ok(_) => Err("\nold bootstrap token was still accepted, it should be rejected".into()),
+        Ok(_) => Err("old bootstrap token was still accepted, it should be rejected".into()),
         Err(ClientError::APIError { code: 403, .. }) => {
             println!("\nOld bootstrap token rejected error code (403), as expected");
             Ok(())
         }
-        Err(ClientError::APIError { code: 503, .. }) => Err("\nvault sealed or unavailable".into()),
+        Err(ClientError::APIError { code: 503, .. }) => Err("vault sealed or unavailable".into()),
         Err(e) => Err(e.into()),
     };
     old_token_check?;
